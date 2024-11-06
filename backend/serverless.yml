@@ -8,8 +8,20 @@ service: backend
 provider:
   name: aws
   runtime: nodejs20.x
+  # region: ap-south-1  # Specify the AWS region here
   environment:
     BUCKET_NAME: backend-public-photos-dev-default
+  iam:
+    role:
+      statements:
+        - Effect: "Allow"
+          Action:
+            - "s3:*"
+          Resource: "arn:aws:s3:::backend-public-photos-dev-default"
+        - Effect: "Allow"
+          Action:
+            - "rekognition:detectLabels"
+          Resource: "*"
 functions:
   hello:
     handler: handler.savePhoto
@@ -24,13 +36,6 @@ functions:
           path: /hello
           method: get
 
-iam:
-  role:
-    statements:
-      - Effect: "Allow"
-        Action:
-          - "s3:*"
-        Resource: "arn:aws:s3:::backend-public-photos-dev-default"
 resources:
   Resources:
     PhotoBucket:
