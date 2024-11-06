@@ -9,3 +9,7 @@ export const uploadPhoto = (FormData: FormData) => {
     });
     }
 
+export const fetechPhotos = () =>{
+    return axios.get(url);
+    
+}

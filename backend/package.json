@@ -15,6 +15,7 @@
   "dependencies": {
     "aws-sdk": "^2.1691.0",
     "lambda-multipart-parser": "^1.0.1",
-    "serverless-offline": "^14.3.3"
+    "serverless-offline": "^14.3.3",
+    "uuid": "^11.0.2"
   }
 }

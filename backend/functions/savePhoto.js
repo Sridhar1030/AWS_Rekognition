@@ -1,11 +1,13 @@
 import AWS from "aws-sdk";
 import parser from "lambda-multipart-parser";
+import { v4 as uuidv4 } from "uuid"; // Correct import
 
 const s3 = new AWS.S3({
 	region: "us-east-1", // Replace with your S3 bucket's region
 });
 
 const rekognition = new AWS.Rekognition({});
+const dynomoDB = new AWS.DynamoDB.DocumentClient();
 
 async function uploadToS3(file) {
 	const BucketName = process.env.BUCKET_NAME;
@@ -17,17 +19,31 @@ async function uploadToS3(file) {
 			Body: file.content,
 		})
 		.promise();
-	const {Labels} = await rekognition
+	const { Labels } = await rekognition
 		.detectLabels({
 			Image: {
 				Bytes: file.content,
 			},
 		})
 		.promise();
+	const primary_key = uuidv4(); // Use uuidv4 here
+	const labels = Labels.map((label) => label.Name);
+
+	await dynomoDB
+		.put({
+			TableName: process.env.DYNAMODB_TABLE,
+			Item: {
+				primary_key,
+				name: file.filename,
+				labels,
+			},
+		})
+		.promise();
 
 	return {
+		primary_key,
 		savedFile: `https://${BucketName}.s3.amazonaws.com/${file.filename}`,
-		labels:Labels.map((label) => label.Name),
+		labels,
 	};
 }
 

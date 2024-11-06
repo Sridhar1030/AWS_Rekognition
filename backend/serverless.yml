@@ -11,6 +11,7 @@ provider:
   # region: ap-south-1  # Specify the AWS region here
   environment:
     BUCKET_NAME: backend-public-photos-dev-default
+    DYNAMODB_TABLE: backend-photos-dev-default
   iam:
     role:
       statements:
@@ -22,15 +23,33 @@ provider:
           Action:
             - "rekognition:detectLabels"
           Resource: "*"
+        - Effect: "Allow"
+          Action:
+            - "dynamodb:PutItem"
+            - "dynamodb:GetItem"
+            # scan query and update
+            - "dynamodb:Query"
+            - "dynamodb:Scan"
+            - "dynamodb:UpdateItem"
+            - "dynamodb:DeleteItem"
+          Resource: "arn:aws:dynamodb::: ${self:service}-photos-${sls:stage}-${opt:uniqueSuffix, 'default'}"
+
 functions:
-  hello:
-    handler: handler.savePhoto
+  savePhoto:
+    handler: functions/savePhoto.savePhoto
     events:
       - httpApi:
           path: /
           method: post
+  getPhotos:
+    handler: functions/getPhotos.getPhotos
+    events:
+      - httpApi:
+          path: /
+          method: get
+
   helloWorld:
-    handler: handler.helloWorld
+    handler: functions/savePhoto.helloWorld
     events:
       - httpApi:
           path: /hello
@@ -38,6 +57,20 @@ functions:
 
 resources:
   Resources:
+    PhotosTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:service}-photos-${sls:stage}-${opt:uniqueSuffix, 'default'}
+        AttributeDefinitions:
+          - AttributeName: primary_key
+            AttributeType: S
+        KeySchema:
+          - AttributeName: primary_key
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+
     PhotoBucket:
       Type: AWS::S3::Bucket
       Properties:

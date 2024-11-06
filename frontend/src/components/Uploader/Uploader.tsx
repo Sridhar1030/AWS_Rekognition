@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 
+
 const Uploader: React.FC = () => {
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [uploading, setUploading] = useState<boolean>(false);
@@ -95,6 +96,7 @@ const Uploader: React.FC = () => {
                     </ul>
                 </div>
             )}
+            this is image list
         </div>
     );
 };
