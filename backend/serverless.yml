@@ -22,6 +22,7 @@ provider:
         - Effect: "Allow"
           Action:
             - "rekognition:detectLabels"
+            - "rekognition:recognizeCelebrities"
           Resource: "*"
         - Effect: "Allow"
           Action:
@@ -47,6 +48,12 @@ functions:
       - httpApi:
           path: /
           method: get
+  celebrityRecognition:
+    handler: functions/celeb.celeb
+    events:
+      - httpApi:
+          path: /celebrity
+          method: post
 
   helloWorld:
     handler: functions/savePhoto.helloWorld
