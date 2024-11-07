@@ -1,5 +1,3 @@
-
-```markdown
 # AWS Rekognition Image Gallery
 
 This project is an image gallery app built with AWS Rekognition. The app allows users to upload images, and it performs automatic image analysis to recognize objects, scenes, and celebrities in the uploaded photos. Images and metadata are then displayed in a gallery format, showing detected labels, identified celebrities, and options for image download.
@@ -91,7 +89,6 @@ This project is an image gallery app built with AWS Rekognition. The app allows 
 - **View Labels**: After processing, each image displays detected labels and recognized celebrities.
 - **Download Images**: Click the "Download" button to save images locally.
 
-
 ## AWS Services
 
 - **Rekognition**: Used for both general label detection and celebrity recognition.
@@ -107,4 +104,3 @@ This project is an image gallery app built with AWS Rekognition. The app allows 
 ## License
 
 This project is licensed under the MIT License.
-```
