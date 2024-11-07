@@ -10,15 +10,15 @@ const rekognition = new AWS.Rekognition({});
 const dynomoDB = new AWS.DynamoDB.DocumentClient();
 
 async function uploadToS3(file) {
-	const BucketName = process.env.BUCKET_NAME;
-	console.log("BucketName", BucketName);
-	const savedFile = await s3
-		.putObject({
-			Bucket: BucketName,
-			Key: file.filename,
-			Body: file.content,
-		})
-		.promise();
+	// const BucketName = process.env.BUCKET_NAME;
+	// console.log("BucketName", BucketName);
+	// const savedFile = await s3
+	// 	.putObject({
+	// 		Bucket: BucketName,
+	// 		Key: file.filename,
+	// 		Body: file.content,
+	// 	})
+	// 	.promise();
 	const { Labels } = await rekognition
 		.detectLabels({
 			Image: {
@@ -29,21 +29,24 @@ async function uploadToS3(file) {
 	const primary_key = uuidv4(); // Use uuidv4 here
 	const labels = Labels.map((label) => label.Name);
 
-	await dynomoDB
-		.put({
-			TableName: process.env.DYNAMODB_TABLE,
-			Item: {
-				primary_key,
-				name: file.filename,
-				labels,
-			},
-		})
-		.promise();
+	// await dynomoDB
+	// 	.put({
+	// 		TableName: process.env.DYNAMODB_TABLE,
+	// 		Item: {
+	// 			primary_key,
+	// 			name: file.filename,
+	// 			labels,
+	// 		},
+	// 	})
+	// 	.promise();
 
 	return {
-		primary_key,
-		savedFile: `https://${BucketName}.s3.amazonaws.com/${file.filename}`,
+		// primary_key,
+		// savedFile: `https://${BucketName}.s3.amazonaws.com/${file.filename}`,
 		labels,
+		fileContent: file.content.toString("base64"), // Convert file content to Base64 for frontend usage
+
+
 	};
 }
 
