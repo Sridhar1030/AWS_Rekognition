@@ -52,7 +52,7 @@ functions:
     handler: functions/celeb.celeb
     events:
       - httpApi:
-          path: /celebrity
+          path: /celeb
           method: post
 
   helloWorld:
