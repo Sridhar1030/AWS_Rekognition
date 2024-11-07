@@ -1,4 +1,3 @@
-Here is the full Markdown file:
 
 ```markdown
 # AWS Rekognition Image Gallery
